@@ -37,7 +37,8 @@ public class WebSecurityConfig {
                 .and()
                 // 어떤 요청에서는 인증을하고 어떤 요청에서는 인증을 안할 건지 설정
                 .authorizeRequests() // 어떤 요청에서 인증을 할 거냐??
-                    .antMatchers("/", "/api/auth/**").permitAll() // 이 요청은 인증을 안해도 됨!
+                .antMatchers(HttpMethod.PUT, "/api/auth/promote").hasRole("COMMON") // 이 요청은 인가 받아야 한다
+                .antMatchers("/", "/api/auth/**").permitAll() // 이 요청은 인증을 안해도 됨!
                     //.antMatchers(HttpMethod.POST, "/api/todos").permitAll()
                     //.antMatchers("/**").hasRole("ADMIN")
                 .anyRequest().authenticated() // 나머지 요청은 모두 인증(로그인)받고 해!!

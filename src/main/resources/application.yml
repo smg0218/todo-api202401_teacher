@@ -1,5 +1,5 @@
 server:
-  port: 8484
+  port: 8083
 
 spring:
   datasource:
@@ -26,3 +26,6 @@ logging:
 
 jwt:
   secret: /G6WJKGRhFp3a4p4dUXAUVdFlxw2piECNh2FA9gAQUoisEe391B8uxuZi8pbqFVhj8xP8YRHANnxPQv1Wj3a3w==
+
+upload:
+  path: D:/todoapi/upload
