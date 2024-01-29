@@ -19,6 +19,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -38,8 +40,6 @@ public class UserController {
 
         log.info("/api/auth POST! - user-info: {}", dto);
 
-        if (profileImg != null) log.info("file-name: {}", profileImg.getOriginalFilename());
-
         if (result.hasErrors()) {
             log.warn(result.toString());
             return ResponseEntity
@@ -47,14 +47,24 @@ public class UserController {
                     .body(result.getFieldError());
         }
 
+        String uploadProfileImagePath = null;
+
         try {
-            UserSignUpResponseDTO responseDTO = userService.create(dto);
+            if (profileImg != null) {
+                log.info("file-name: {}", profileImg.getOriginalFilename());
+                uploadProfileImagePath = userService.uploadProfileImage(profileImg);
+            }
+
+            UserSignUpResponseDTO responseDTO = userService.create(dto, uploadProfileImagePath);
             return ResponseEntity.ok().body(responseDTO);
         } catch (NoRegisteredArgumentsException e) {
             log.warn("필수 가입 정보를 전달받지 못했습니다!!");
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (DuplicatedEmailException e) {
             log.warn("이메일이 중복되었습니다.");
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IOException e) {
+            log.warn("파일 업로드 경로가 잘못되었거나 파일 저장에 실패했습니다!");
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

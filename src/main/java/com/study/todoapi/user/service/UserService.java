@@ -35,7 +35,7 @@ public class UserService {
     private String rootPath; // 파일 저장 루트경로
 
     // 회원가입 처리
-    public UserSignUpResponseDTO create(UserSignUpRequestDTO dto) {
+    public UserSignUpResponseDTO create(UserSignUpRequestDTO dto, String imagePath) {
 
         if (dto == null) {
             throw new NoRegisteredArgumentsException("회원가입 입력정보가 없습니다!");
@@ -47,7 +47,7 @@ public class UserService {
             throw new DuplicatedEmailException("중복된 이메일입니다!!");
         }
 
-        User saved = userRepository.save(dto.toEntity(passwordEncoder));
+        User saved = userRepository.save(dto.toEntity(passwordEncoder, imagePath));
 
         log.info("회원가입 성공!! saved user - {}", saved);
 
